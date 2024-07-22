@@ -18,7 +18,7 @@
         $result->free();
     }
 
-    $id = random(1, $count);
+    $id = rand(1, $count);
 
     $result = $mysqli->query("SELECT quote FROM famousquotes WHERE id = " . strval($id));
     if ($result) {
