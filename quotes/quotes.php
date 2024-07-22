@@ -1,3 +1,6 @@
+<html>
+<body>
+<h1>
 <?php
     $username = "quotesapp";
     $password = "app-password";
@@ -35,3 +38,8 @@
 
     $mysqli->close();
 ?>
+</h1>
+<p>
+<a hef="">Another quote</a>
+</body>
+</html>
