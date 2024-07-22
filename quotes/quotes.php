@@ -40,6 +40,6 @@
 ?>
 </h1>
 <p>
-<a hef="">Another quote</a>
+<a hef="/quotes.php">Another quote</a>
 </body>
 </html>
