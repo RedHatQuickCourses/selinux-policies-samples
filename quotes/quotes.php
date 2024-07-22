@@ -40,6 +40,7 @@
 ?>
 </h1>
 <p>
-<a hef="/quotes.php">Another quote</a>
+<a href="/index.html">Back</a> | <a href="../quotes.php">Another quote</a>
+</p>
 </body>
 </html>
