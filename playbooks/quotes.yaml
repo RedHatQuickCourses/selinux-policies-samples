@@ -1,0 +1,37 @@
+# Configure SELinux for the quotes example:
+# - Apache Web Server can connect to remote database servers
+# This playbook does NOT deploy the quotes application!
+
+- name: Configure SELinux for a PHP web app which connects to MySQL
+  hosts: localhost
+  vars:
+    selinux_policy: targeted
+    selinux_state: enforcing
+    selinux_booleans:
+      - {name: 'httpd_can_network_connect_db', state: 'on'}
+
+  tasks:
+    - name: Configure SELinux
+      block:
+        - name: Include selinux role
+          include_role:
+            name: rhel-system-roles.selinux
+      rescue:
+        # Fail if failed for a different reason than selinux_reboot_required.
+        - name: Handle errors
+          fail:
+            msg: "role failed"
+          when: not selinux_reboot_required
+
+        - name: Restart managed host
+          reboot:
+
+        - name: Wait for managed host to come back
+          wait_for_connection:
+            delay: 10
+            timeout: 300
+
+        - name: Reapply the role
+          include_role:
+            name: rhel-system-roles.selinux
+

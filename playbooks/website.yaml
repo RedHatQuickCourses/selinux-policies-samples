@@ -1,0 +1,42 @@
+# Configure SELinux for the website example:
+# - Apache Web Server listens on port 30000
+# - Document root at /var/website
+# This playbook does NOT configure httpd itself!
+
+- name: Configure SELinux for non-standard httpd configuration
+  hosts: localhost
+  vars:
+    selinux_policy: targeted
+    selinux_state: enforcing
+    selinux_fcontexts:
+      - {target: '/var/website(/.*)?', setype: 'httpd_sys_content_t', ftype: 'a'}
+    selinux_restore_dirs:
+      - /var/website
+    selinux_ports:
+      - {ports: '30000', proto: 'tcp', setype: 'http_port_t', state: 'present'}
+
+  tasks:
+    - name: Configure SELinux
+      block:
+        - name: Include selinux role
+          include_role:
+            name: rhel-system-roles.selinux
+      rescue:
+        # Fail if failed for a different reason than selinux_reboot_required.
+        - name: Handle errors
+          fail:
+            msg: "role failed"
+          when: not selinux_reboot_required
+
+        - name: Restart managed host
+          reboot:
+
+        - name: Wait for managed host to come back
+          wait_for_connection:
+            delay: 10
+            timeout: 300
+
+        - name: Reapply the role
+          include_role:
+            name: rhel-system-roles.selinux
+
