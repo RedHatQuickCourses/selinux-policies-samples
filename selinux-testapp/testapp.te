@@ -1,0 +1,48 @@
+policy_module(testapp, 1.0.0)
+
+########################################
+#
+# Declarations
+#
+
+type testapp_t;
+type testapp_exec_t;
+init_daemon_domain(testapp_t, testapp_exec_t)
+
+type testapp_var_run_t;
+files_pid_file(testapp_var_run_t)
+
+########################################
+#
+# testapp local policy
+#
+allow testapp_t self:process { fork };
+allow testapp_t self:fifo_file rw_fifo_file_perms;
+allow testapp_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(testapp_t, testapp_var_run_t, testapp_var_run_t)
+manage_files_pattern(testapp_t, testapp_var_run_t, testapp_var_run_t)
+manage_lnk_files_pattern(testapp_t, testapp_var_run_t, testapp_var_run_t)
+files_pid_filetrans(testapp_t, testapp_var_run_t, { dir file lnk_file })
+
+domain_use_interactive_fds(testapp_t)
+
+files_read_etc_files(testapp_t)
+
+logging_send_syslog_msg(testapp_t)
+
+miscfiles_read_localization(testapp_t)
+
+# Before this line, all rules were auto-generated
+
+kernel_read_system_state(testapp_t)
+
+miscfiles_read_certs(testapp_t)
+miscfiles_search_generic_cert_dirs(testapp_t)
+
+allow testapp_t self:tcp_socket { connect create getattr getopt setopt };
+allow testapp_t self:udp_socket { connect create getattr setopt };
+corenet_tcp_connect_http_port(testapp_t)
+
+sysnet_read_config(testapp_t)
+
