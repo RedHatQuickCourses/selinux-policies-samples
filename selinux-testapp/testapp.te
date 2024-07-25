@@ -37,7 +37,7 @@ miscfiles_read_localization(testapp_t)
 
 kernel_read_system_state(testapp_t)
 
-miscfiles_read_certs(testapp_t)
+miscfiles_read_generic_certs(testapp_t)
 miscfiles_search_generic_cert_dirs(testapp_t)
 
 allow testapp_t self:tcp_socket { connect create getattr getopt setopt };
